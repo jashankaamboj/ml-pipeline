@@ -11,8 +11,7 @@ GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 # URLs (replace with your actual ones)
 GITHUB_ACTION_URL = "https://api.github.com/repos/jashankaamboj/ml-pipeline/actions/workflows/train.yml/dispatches"
 RENDER_DEPLOY_HOOK = "https://api.render.com/deploy/srv-d2afmn63jp1c73ajl8g0?key=2ex5OnoJkTk"  # Your actual hook
-API_URL = "https://ml-pipeline-1-dhl.onrender.com/predict"  # Your Render API endpoint
-
+API_URL = "https://ml-pipeline-1-dhl1.onrender.com/predict"
 # Set page
 st.set_page_config(page_title="ML Pipeline Dashboard", layout="centered")
 
