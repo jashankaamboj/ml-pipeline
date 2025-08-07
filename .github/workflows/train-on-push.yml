@@ -10,23 +10,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Set Up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Set Up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Install Dependencies
-      run: |
-        pip install -r requirements.txt
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
 
-    - name: Run Training Script
-      run: python training/train_model.py
+      - name: Run Training Script
+        run: python training/train_model.py
 
-    - name: Upload Trained Model
-      uses: actions/upload-artifact@v3
-      with:
-        name: trained-model
-        path: model/model.pkl
+      - name: Upload Trained Model
+        uses: actions/upload-artifact@v3
+        with:
+          name: trained-model
+          path: model/model.pkl
