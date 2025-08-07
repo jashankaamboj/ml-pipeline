@@ -65,10 +65,13 @@ if st.button("Trigger Render Deployment"):
 st.header("📊 Model Performance")
 try:
     with open("metrics/metrics.txt", "r") as f:
-        mae, rmse = f.read().strip().split(",")
+        mae, rmse, mse, r2, accuracy = f.read().strip().split(",")
         st.metric("MAE", round(float(mae), 2))
         st.metric("RMSE", round(float(rmse), 2))
-except:
+        st.metric("MSE", round(float(mse), 2))
+        st.metric("R² Score", round(float(r2), 4))
+        st.metric("Accuracy (%)", f"{float(accuracy):.2f}%")
+except Exception as e:
     st.warning("⚠️ Metrics not available. Please train the model.")
 
 # ------------------ Make Prediction ------------------
