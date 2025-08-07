@@ -56,8 +56,8 @@ if st.button("Trigger GitHub Action for Training"):
 st.header("🚀 Deploy Model")
 if st.button("Trigger Render Deployment"):
     response = requests.post(RENDER_DEPLOY_HOOK)
-    if response.status_code == 200:
-        st.success("✅ Deployment triggered!")
+    if response.status_code in [200, 202]:  # Accept both 200 and 202
+        st.success("✅ Deployment triggered! Check Render dashboard for progress.")
     else:
         st.error(f"❌ Failed to deploy: {response.text}")
 
