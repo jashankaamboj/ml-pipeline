@@ -33,7 +33,8 @@ def train_model(
     # Step 4: Predict and calculate metrics
     predictions = model.predict(X)
     mae = mean_absolute_error(y, predictions)
-    rmse = mean_squared_error(y, predictions, squared=False)
+    mse = mean_squared_error(y, predictions)
+    rmse = mse ** 0.5  # Compatible version of RMSE
 
     # Step 5: Save the trained model
     os.makedirs(os.path.dirname(model_path), exist_ok=True)
