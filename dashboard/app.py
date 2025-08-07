@@ -3,29 +3,40 @@ import requests
 import pandas as pd
 from dotenv import load_dotenv
 import os
+from datetime import datetime
 
-
+# Load environment variables
 load_dotenv()
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
 # URLs (replace with your actual ones)
 GITHUB_ACTION_URL = "https://api.github.com/repos/jashankaamboj/ml-pipeline/actions/workflows/train.yml/dispatches"
-RENDER_DEPLOY_HOOK = "https://api.render.com/deploy/srv-d2afmn63jp1c73ajl8g0?key=2ex5OnoJkTk"  # Your actual hook
+RENDER_DEPLOY_HOOK = "https://api.render.com/deploy/srv-d2afmn63jp1c73ajl8g0?key=2ex5OnoJkTk"
 API_URL = "https://ml-pipeline-1-dhl1.onrender.com/predict"
-# Set page
-st.set_page_config(page_title="ML Pipeline Dashboard", layout="centered")
 
+# Set Streamlit page
+st.set_page_config(page_title="ML Pipeline Dashboard", layout="centered")
 st.title("🧠 ML Model Dashboard")
 
-# Upload dataset
+# ------------------ Upload Dataset ------------------
 st.header("📁 Upload Dataset")
 uploaded_file = st.file_uploader("Choose a CSV file", type="csv")
 if uploaded_file:
+    # Preview uploaded dataset
     df = pd.read_csv(uploaded_file)
     st.write("Preview of uploaded dataset:")
     st.dataframe(df)
 
-# Trigger Training
+    # Save uploaded dataset with timestamp
+    os.makedirs("data/versions", exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    save_path = f"data/versions/dataset_{timestamp}.csv"
+    with open(save_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+
+    st.success(f"✅ Dataset saved to: `{save_path}`")
+
+# ------------------ Trigger GitHub Action ------------------
 st.header("⚙️ Train Model")
 if st.button("Trigger GitHub Action for Training"):
     headers = {
@@ -37,20 +48,30 @@ if st.button("Trigger GitHub Action for Training"):
     }
     response = requests.post(GITHUB_ACTION_URL, json=payload, headers=headers)
     if response.status_code == 204:
-        st.success("Training triggered via GitHub Actions!")
+        st.success("✅ Training triggered via GitHub Actions!")
     else:
-        st.error(f"Failed to trigger training: {response.text}")
+        st.error(f"❌ Failed to trigger training: {response.text}")
 
-# Trigger Deploy
+# ------------------ Trigger Deployment ------------------
 st.header("🚀 Deploy Model")
 if st.button("Trigger Render Deployment"):
     response = requests.post(RENDER_DEPLOY_HOOK)
     if response.status_code == 200:
-        st.success("Deployment triggered!")
+        st.success("✅ Deployment triggered!")
     else:
-        st.error(f"Failed to deploy: {response.text}")
+        st.error(f"❌ Failed to deploy: {response.text}")
 
-# Predict
+# ------------------ Show Model Metrics ------------------
+st.header("📊 Model Performance")
+try:
+    with open("metrics/metrics.txt", "r") as f:
+        mae, rmse = f.read().strip().split(",")
+        st.metric("MAE", round(float(mae), 2))
+        st.metric("RMSE", round(float(rmse), 2))
+except:
+    st.warning("⚠️ Metrics not available. Please train the model.")
+
+# ------------------ Make Prediction ------------------
 st.header("🔮 Make a Prediction")
 area = st.number_input("Area (sq ft)", min_value=0)
 bedrooms = st.number_input("Number of Bedrooms", min_value=0)
@@ -66,7 +87,7 @@ if st.button("Predict Price"):
         res = requests.post(API_URL, json=input_data)
         result = res.json()
         if "predicted_price" in result:
-            st.success(f"Predicted Price: ₹{round(result['predicted_price'], 2)}")
+            st.success(f"💰 Predicted Price: ₹{round(result['predicted_price'], 2)}")
         else:
             st.error(f"API Error: {result.get('error', 'Unknown error')}")
     except Exception as e:
