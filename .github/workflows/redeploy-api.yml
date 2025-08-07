@@ -1,0 +1,13 @@
+name: Auto Redeploy API on Model Update
+
+on:
+  push:
+    paths:
+      - 'model/**'
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger redeploy on Render
+        run: curl -X POST "https://api.render.com/deploy/srv-d2afmn63jplc73ajl8g0?key=2ex5OnoJkTk"
