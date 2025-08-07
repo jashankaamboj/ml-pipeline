@@ -22,4 +22,4 @@ jobs:
 
       - name: Run training script
         run: |
-          python training/train.py
+          python train_model.py
