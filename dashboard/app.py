@@ -1,11 +1,16 @@
 import streamlit as st
 import requests
 import pandas as pd
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 
 # URLs (replace with your actual ones)
 GITHUB_ACTION_URL = "https://api.github.com/repos/jashankaamboj/ml-pipeline/actions/workflows/train.yml/dispatches"
-GITHUB_TOKEN = "ghp_xxx"  # Replace with your GitHub token
-RENDER_DEPLOY_HOOK = "https://api.render.com/deploy/your-hook-id"  # Your actual hook
+RENDER_DEPLOY_HOOK = "https://api.render.com/deploy/srv-d2afmn63jp1c73ajl8g0?key=2ex5OnoJkTk"  # Your actual hook
 API_URL = "https://ml-pipeline-1-dhl.onrender.com/predict"  # Your Render API endpoint
 
 # Set page
