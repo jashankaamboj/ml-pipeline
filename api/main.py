@@ -7,7 +7,12 @@ app = Flask(__name__)
 
 # Load the model
 MODEL_PATH = os.path.join(os.path.dirname(__file__), '../model/model.pkl')
-model = joblib.load(MODEL_PATH)
+
+try:
+    model = joblib.load(MODEL_PATH)
+except FileNotFoundError:
+    model = None
+    print(f"❌ Model not found at {MODEL_PATH}")
 
 @app.route("/", methods=["GET"])
 def home():
@@ -15,14 +20,15 @@ def home():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    data = request.get_json()
+    if model is None:
+        return jsonify({"error": "Model not loaded"}), 500
 
+    data = request.get_json()
     try:
         area = data["area"]
         bedrooms = data["bedrooms"]
         age = data["age"]
         features = np.array([[area, bedrooms, age]])
-
         price = model.predict(features)[0]
         return jsonify({"predicted_price": price})
     except Exception as e:
