@@ -31,4 +31,5 @@ jobs:
           git config --global user.email "actions@github.com"
           git add metrics/metrics.txt
           git commit -m "🔁 Update metrics after training" || echo "No changes to commit"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+          git push https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}.git HEAD:main
+
