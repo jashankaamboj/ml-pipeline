@@ -27,11 +27,10 @@ jobs:
 
       - name: Commit and Push Updated Metrics
         env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add metrics/metrics.txt
-          git commit -m "🔁 Update metrics after training"
-          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} HEAD:main
-
+          git commit -m "🔁 Update metrics after training" || echo "No changes to commit"
+          git push https://x-access-token:${TOKEN}@github.com/${{ github.repository }} HEAD:main
